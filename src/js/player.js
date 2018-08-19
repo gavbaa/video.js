@@ -401,6 +401,12 @@ class Player extends Component {
     // Set default value for lastPlaybackRate
     this.cache_.lastPlaybackRate = this.defaultPlaybackRate();
 
+    this.setCurrentTimeFn = null;
+
+    if (options.setCurrentTimeFn) {
+      this.setCurrentTimeFn = options.setCurrentTimeFn;
+    }
+
     // Make this an evented object and use `el_` as its event bus.
     evented(this, {eventBusKey: 'el_'});
 
@@ -2116,6 +2122,9 @@ class Player extends Component {
     if (typeof seconds !== 'undefined') {
       if (seconds < 0) {
         seconds = 0;
+      }
+      if (this.setCurrentTimeFn) {
+        seconds = this.setCurrentTimeFn(seconds);
       }
       this.techCall_('setCurrentTime', seconds);
       return;
